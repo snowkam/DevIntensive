@@ -1,3 +1,13 @@
 <resources>
-    <string name="app_name">DevIntensive</string>
+    <string name="app_name">Мурашко Дмитрий</string>
+    <string name="txt.hint.telephon">Мобильный телефон</string>
+    <string name="txt.hint.email">E-mail</string>
+    <string name="txt.hint.vk">Профиль в контакте</string>
+    <string name="txt.hint.github">Репозиторий</string>
+    <string name="txt.hint.about">О себе</string>
+    <string name="txt.temp.about">Текст (от лат. textus — «ткань; сплетение, связь, паутина, сочетание») —
+        зафиксированная на каком-либо материальном носителе человеческая мысль;
+        в общем плане связная и полная последовательность символов.</string>
+
+
 </resources>
