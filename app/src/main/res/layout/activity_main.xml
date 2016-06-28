@@ -69,14 +69,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="112dp"
                     android:background="@color/grey"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="28dp"
-                        android:orientation="horizontal">
-
-                    </LinearLayout>
+                    android:orientation="vertical"
+                    android:paddingBottom="@dimen/spacing_medial_28"
+                    android:paddingTop="@dimen/spacing_medial_28"
+                    app:layout_behavior="com.softdesign.devintensive.utils.ZoomingLinearLayout">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -186,14 +182,7 @@
                                 android:background="@color/grey_light"/>
                         </RelativeLayout>
 
-
                     </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="28dp"
-                        android:orientation="horizontal"
-                        ></LinearLayout>
 
                 </LinearLayout>
 
@@ -281,10 +270,10 @@
                                 android:enabled="true"
                                 android:focusable="false"
                                 android:hint="@string/txt.hint.email"
+                                android:inputType="text"
                                 android:text="snowkam@bk.ru"
                                 android:textColor="@color/black"
-                                android:textColorHint="@color/grey"
-                                android:inputType="text"/>
+                                android:textColorHint="@color/grey"/>
                         </android.support.design.widget.TextInputLayout>
 
                     </LinearLayout>
