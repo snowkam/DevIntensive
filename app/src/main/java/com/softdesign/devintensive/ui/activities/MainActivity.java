@@ -1,5 +1,7 @@
 package com.softdesign.devintensive.ui.activities;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -14,11 +16,13 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.data.managers.DataManager;
 import com.softdesign.devintensive.utils.ConstantManager;
+import com.softdesign.devintensive.utils.RoundedAvatarDrawable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +44,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private List<EditText> mUserInfoViews;
     private TextView mUserMailText;
 
-    NavigationView navigationView;
+    private NavigationView mNavigationView;
+
+
+    private View mHeader;
 
 
     @Override
@@ -49,7 +56,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         setContentView(R.layout.activity_main);
         Log.d(TAG, "onCreate");
 
-        navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
+        mHeader = mNavigationView.getHeaderView(0);
 
         mDataManager = DataManager.getInstance();
 
@@ -80,6 +88,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         setupToolbar();
         setupDrawer();
         loadUserInfoValue();
+        setupAvatarNavigationDrawer();
 
 
         if (savedInstanceState == null) {
@@ -187,7 +196,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void setupDrawer() {
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
                 showSnackbar(item.getTitle().toString());
@@ -243,15 +252,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
-    //если NavigationDrawer открыт закрываем его иначе закрываем активити
-    if(mNavigationDrawer.isDrawerOpen(GravityCompat.START)) {
-        mNavigationDrawer.closeDrawer(GravityCompat.START);
-    } else {
-        onBackPressed();
-    }
-        return true;
-    }
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+            //если NavigationDrawer открыт закрываем его иначе закрываем активити
+            if (mNavigationDrawer.isDrawerOpen(GravityCompat.START)) {
+                mNavigationDrawer.closeDrawer(GravityCompat.START);
+            } else {
+                onBackPressed();
+            }
+            return true;
+        }
         return super.onKeyDown(keyCode, event);
+    }
+
+    private void setupAvatarNavigationDrawer() {
+        ImageView mUserAvatarImg = (ImageView) mHeader.findViewById(R.id.user_avatar_img);
+        Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.user_avatar);
+
+        mUserAvatarImg.setImageDrawable(new RoundedAvatarDrawable(bitmap));
     }
 }
