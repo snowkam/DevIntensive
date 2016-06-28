@@ -1,7 +1,7 @@
 package com.softdesign.devintensive.ui.activities;
 
-import android.support.design.widget.CoordinatorLayout;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -10,9 +10,11 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.data.managers.DataManager;
@@ -25,7 +27,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     static final String TAG = ConstantManager.TAG_PREFIX + "MainActivity";
 
     private DataManager mDataManager;
-    private int mCurrentEditMode=0;
+    private int mCurrentEditMode = 0;
 
     private int mColorMode;
     private CoordinatorLayout mCoordinatorLayout;
@@ -36,8 +38,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private EditText mUserPhone, mUserMail, mUserVk, mUserGit, mUserBio;
 
     private List<EditText> mUserInfoViews;
+    private TextView mUserMailText;
 
-
+    NavigationView navigationView;
 
 
     @Override
@@ -45,6 +48,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d(TAG, "onCreate");
+
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
 
         mDataManager = DataManager.getInstance();
 
@@ -60,6 +65,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mUserGit = (EditText) findViewById(R.id.github_et);
         mUserBio = (EditText) findViewById(R.id.bio_et);
 
+        mUserMailText = (TextView) findViewById(R.id.user_email_txt);
+
         mUserInfoViews = new ArrayList<>();
         mUserInfoViews.add(mUserPhone);
         mUserInfoViews.add(mUserMail);
@@ -68,14 +75,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mUserInfoViews.add(mUserBio);
 
 
-
         mFab.setOnClickListener(this);
 
         setupToolbar();
         setupDrawer();
         loadUserInfoValue();
-
-
 
 
         if (savedInstanceState == null) {
@@ -90,7 +94,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId()== android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             mNavigationDrawer.openDrawer(GravityCompat.START);
         }
         return super.onOptionsItemSelected(item);
@@ -138,15 +142,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.fab:
 
-                if (mCurrentEditMode==0) {
+                if (mCurrentEditMode == 0) {
                     changeEditMode(1);
-                    mCurrentEditMode= 1;
+                    mCurrentEditMode = 1;
                 } else {
                     changeEditMode(0);
-                    mCurrentEditMode=0;
+                    mCurrentEditMode = 0;
                 }
 
-            break;
+                break;
         }
     }
 
@@ -157,7 +161,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     }
 
-    private void showSnackbar(String message){
+    private void showSnackbar(String message) {
         Snackbar.make(mCoordinatorLayout, message, Snackbar.LENGTH_LONG).show();
     }
 
@@ -173,17 +177,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     }*/
 
-    private void setupToolbar(){
+    private void setupToolbar() {
         setSupportActionBar(mToolbar);
-        ActionBar actionBar= getSupportActionBar();
-        if(actionBar != null){
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_dehaze_black_24dp);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
 
-    private void setupDrawer(){
-        NavigationView navigationView= (NavigationView) findViewById(R.id.navigation_view);
+    private void setupDrawer() {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
@@ -198,10 +201,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     /**
      * Переключает режим редактировать
+     *
      * @param mode если 1 - режим педактирования , 0 режим просмотра
-     * */
-    private void changeEditMode(int mode){
-        if (mode ==1) {
+     */
+    private void changeEditMode(int mode) {
+        if (mode == 1) {
             mFab.setImageResource(R.drawable.ic_done_black_24dp);
             for (EditText userValue : mUserInfoViews) {
                 userValue.setEnabled(true);
@@ -220,21 +224,34 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     }
 
-    private void loadUserInfoValue(){
+    private void loadUserInfoValue() {
         List<String> userData = mDataManager.getPreferancesManager().loadUserProfileData();
         for (int i = 0; i < userData.size(); i++) {
             mUserInfoViews.get(i).setText(userData.get(i));
         }
-
     }
 
     private void saveUserInfoValue() {
         List<String> userData = new ArrayList<>();
 
-        for (EditText  userFieldView : mUserInfoViews) {
+        for (EditText userFieldView : mUserInfoViews) {
             userData.add(userFieldView.getText().toString());
         }
         mDataManager.getPreferancesManager().saveUserProfileData(userData);
 
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+    //если NavigationDrawer открыт закрываем его иначе закрываем активити
+    if(mNavigationDrawer.isDrawerOpen(GravityCompat.START)) {
+        mNavigationDrawer.closeDrawer(GravityCompat.START);
+    } else {
+        onBackPressed();
+    }
+        return true;
+    }
+        return super.onKeyDown(keyCode, event);
     }
 }
