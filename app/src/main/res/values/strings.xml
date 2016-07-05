@@ -19,6 +19,9 @@
     <string name="error_call_phone">Не правильный формат телефона!!!</string>
     <string name="error_send_email">Неверный формат почты.</string>
     <string name="error_nourl_internet">Неверный формат ссылки!!!</string>
+    <string name="txt.hint_password">Password</string>
+    <string name="txt.login">Войти</string>
+    <string name="txt_forgot_password">Забыли пароль?</string>
 
 
 </resources>
