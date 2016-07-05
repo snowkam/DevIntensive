@@ -364,6 +364,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 userValue.setEnabled(true);
                 userValue.setFocusable(true);
                 userValue.setFocusableInTouchMode(true);
+                mUserPhone.requestFocus(); //устанавливаем фокус на поле телефон
+                mUserPhone.setSelection(mUserPhone.getText().length()); // и устанавливаем курсор в конец строки
             }
             showProfilePlaceHolder();
             lockToolbar();
@@ -464,17 +466,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
 
+    /**
+     * Загрузка фотографии из галлереи
+     */
     private void loadPhotoFromGallery() {
         Intent takeGalleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         takeGalleryIntent.setType("image/*");
         startActivityForResult(Intent.createChooser(takeGalleryIntent, getString(R.string.user_profile_chose_message)), ConstantManager.REQUEST_GALLERY_PICTURE);
     }
 
+    /**
+     * загрузка фото с камеры
+     */
     private void loadPhotoFromCamera() {
         //if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
         //       && ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE == PackageManager.PERMISSION_GRANTED)) {
-
-
         Intent takeCaptureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         try {
             mPhotoFile = createImageFile();
