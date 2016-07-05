@@ -16,6 +16,9 @@
     <string name="user_profile_dialog_cancel">Отмена</string>
     <string name="user_profile_dialog_title">Изменить фотографию</string>
     <string name="user_profile_chose_message">выберите фото</string>
+    <string name="error_call_phone">Не правильный формат телефона!!!</string>
+    <string name="error_send_email">Неверный формат почты.</string>
+    <string name="error_nourl_internet">Неверный формат ссылки!!!</string>
 
 
 </resources>

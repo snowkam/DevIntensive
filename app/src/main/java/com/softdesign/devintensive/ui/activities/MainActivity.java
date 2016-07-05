@@ -1,5 +1,6 @@
 package com.softdesign.devintensive.ui.activities;
 
+import android.Manifest;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
@@ -19,12 +20,15 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -37,6 +41,7 @@ import android.widget.TextView;
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.data.managers.DataManager;
 import com.softdesign.devintensive.utils.ConstantManager;
+import com.softdesign.devintensive.utils.RegexInputFilter;
 import com.softdesign.devintensive.utils.RoundedAvatarDrawable;
 import com.squareup.picasso.Picasso;
 
@@ -46,10 +51,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.jar.Manifest;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
     static final String TAG = ConstantManager.TAG_PREFIX + "MainActivity";
+
+    final String REGEX_PHONE = "\\+7\\(\\d{3}\\)\\d{3}\\-\\d{2}\\-\\d{2,11}";
+    final String REGEX_EMAIL = "\\w{3,20}\\@\\w{2,}\\.\\w{2}";
+    final String REGEX_VK = "\\w{2}\\.\\w{3}\\/\\w{4,}";
+    final String REGEX_GITHUB = "\\w{6}\\.\\w{3}\\/\\w{4,}";
 
     private DataManager mDataManager;
     private int mCurrentEditMode = 0;
@@ -60,7 +69,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private DrawerLayout mNavigationDrawer;
     private FloatingActionButton mFab;
 
-    private EditText mUserPhone, mUserMail, mUserVk, mUserGit, mUserBio;
+    private EditText mUserPhone, mUserEmail, mUserVk, mUserGit, mUserBio;
+
+    private ImageView mCallImg, mSendEmail, mLookVk, mLookGithub;
 
     private List<EditText> mUserInfoViews;
     private TextView mUserMailText;
@@ -102,22 +113,94 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mCollapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         mAppBarLayout = (AppBarLayout) findViewById(R.id.appbar_layout);
         mProfileImage = (ImageView) findViewById(R.id.user_photo_img);
-        //находим текседит и задаем ему формат ввода
+        //находим текседит и задаем ему формат Телефона
         mUserPhone = (EditText) findViewById(R.id.phone_et);
-        //mUserPhone.addTextChangedListener(new MaskedWatcher("(###) ###-##-##"));
+        mUserPhone.setFilters(new InputFilter[]{new RegexInputFilter(REGEX_PHONE)});
+        mUserPhone.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() < 3) {
+                    mUserPhone.setText("+7(");
+                    mUserPhone.setSelection(3);
+                }
+                if (editable.length() == 6) {
+                    mUserPhone.setText(editable + ")");
+                    mUserPhone.setSelection(mUserPhone.getText().length());
+                }
+                if (editable.length() == 10) {
+                    mUserPhone.setText(editable + "-");
+                    mUserPhone.setSelection(mUserPhone.getText().length());
+                }
+                if (editable.length() == 13) {
+                    mUserPhone.setText(editable + "-");
+                    mUserPhone.setSelection(mUserPhone.getText().length());
+                }
+            }
+        });
+        //находим текседит и задаем ему формат email
+        mUserEmail = (EditText) findViewById(R.id.email_et);
+        mUserEmail.setFilters(new InputFilter[]{new RegexInputFilter(REGEX_EMAIL)});
 
 
+        //находим текседит и задаем ему формат vk
+        mUserVk = (EditText) findViewById(R.id.vkcom_et);
+        mUserVk.setFilters(new InputFilter[]{new RegexInputFilter(REGEX_VK)});
+        mUserVk.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
-        mUserMail = (EditText) findViewById(R.id.email_et);
-        mUserVk = (EditText) findViewById(R.id.vk_et);
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                Log.d(TAG, "editable.length() =======" + mUserVk.getText().toString());
+                if (mUserVk.getText().length() < 7) {
+                    mUserVk.setText("vk.com/");
+                    mUserVk.setSelection(7);
+                }
+            }
+        });
+
+        //находим текседит и задаем ему формат github
         mUserGit = (EditText) findViewById(R.id.github_et);
+        mUserGit.setFilters(new InputFilter[]{new RegexInputFilter(REGEX_GITHUB)});
+        mUserGit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (mUserGit.getText().length() < 11) {
+                    mUserGit.setText("github.com/");
+                    mUserGit.setSelection(11);
+                }
+            }
+        });
+
+
         mUserBio = (EditText) findViewById(R.id.bio_et);
 
         mUserMailText = (TextView) findViewById(R.id.user_email_txt);
 
         mUserInfoViews = new ArrayList<>();
         mUserInfoViews.add(mUserPhone);
-        mUserInfoViews.add(mUserMail);
+        mUserInfoViews.add(mUserEmail);
         mUserInfoViews.add(mUserVk);
         mUserInfoViews.add(mUserGit);
         mUserInfoViews.add(mUserBio);
@@ -126,6 +209,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mFab.setOnClickListener(this);
 
         mProfilePlaceholder.setOnClickListener(this);
+
+        //обработка кнопочек
+        mCallImg = (ImageView) findViewById(R.id.call_img);
+        mCallImg.setOnClickListener(this);
+        mSendEmail = (ImageView) findViewById(R.id.send_email_img);
+        mSendEmail.setOnClickListener(this);
+        mLookVk = (ImageView) findViewById(R.id.vkcom_img);
+        mLookVk.setOnClickListener(this);
+        mLookGithub =(ImageView) findViewById(R.id.github_img);
+        mLookGithub.setOnClickListener(this);
+
 
         setupToolbar();
         setupDrawer();
@@ -178,11 +272,34 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 }
                 break;
             case R.id.profile_placeholder:
-                //// TODO: 01.07.16  сделать выбор откуда брать фото
+                // сделать выбор откуда брать фото
                 showDialog(ConstantManager.LOAD_PROFILE_PHOTO);
+                break;
+            case R.id.call_img:
+                //сделать звонок
+                callPhone();
+                break;
+            case R.id.send_email_img:
+                //отправить почту
+                sendEmail();
+                break;
+            case R.id.vkcom_img:
+                //смотрим vk.com
+                if (mUserVk.getText().toString().matches(REGEX_VK)){
+                    lookAdressInternet("https://" + mUserVk.getText().toString());
+                } else showSnackbar(getString(R.string.error_nourl_internet));
 
+                break;
+            case R.id.github_img:
+                //смотрим github.com
+                if (mUserGit.getText().toString().matches(REGEX_GITHUB)){
+                    lookAdressInternet("https://" + mUserGit.getText().toString());
+                } else showSnackbar(getString(R.string.error_nourl_internet));
+
+                break;
         }
     }
+
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -355,21 +472,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private void loadPhotoFromCamera() {
         //if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
-         //       && ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE == PackageManager.PERMISSION_GRANTED)) {
+        //       && ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE == PackageManager.PERMISSION_GRANTED)) {
 
 
-            Intent takeCaptureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            try {
-                mPhotoFile = createImageFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-                //// TODO: 01.07.16  обработать ошибку
-            }
-            if (mPhotoFile != null) {
-                // TODO: 01.07.16 передать фото в интент
-                takeCaptureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mPhotoFile));
-                startActivityForResult(takeCaptureIntent, ConstantManager.REQUEST_CAMERA_PICTURE);
-            }
+        Intent takeCaptureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        try {
+            mPhotoFile = createImageFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+            //// TODO: 01.07.16  обработать ошибку
+        }
+        if (mPhotoFile != null) {
+            //  передать фото в интент
+            takeCaptureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mPhotoFile));
+            startActivityForResult(takeCaptureIntent, ConstantManager.REQUEST_CAMERA_PICTURE);
+        }
         //}
 
     }
@@ -408,17 +525,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     public void onClick(DialogInterface dialog, int choiceItem) {
                         switch (choiceItem) {
                             case 0:
-                                //// TODO: 01.07.16 галлерея
+                                // галлерея
                                 loadPhotoFromGallery();
                                 //showSnackbar("загрузить из галлереи");
                                 break;
                             case 1:
-                                //// TODO: 01.07.16  камера
+                                //  камера
                                 loadPhotoFromCamera();
                                 //showSnackbar("сфотографировать");
                                 break;
                             case 2:
-                                //// TODO: 01.07.16 отмена
+                                // отмена
                                 dialog.cancel();
                                 //showSnackbar("отмена");
                                 break;
@@ -448,14 +565,65 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         return image;
     }
 
+    /**
+     * метод выводит изображение в ImageView и сохраняет его в Preferances
+     * @param selectedImage - путь изображения полученный из галлереи или с камеры
+     */
     private void insertProfileImage(Uri selectedImage) {
         Picasso.with(this).load(selectedImage).into(mProfileImage);
         mDataManager.getPreferancesManager().saveUserPhoto(selectedImage);
 
     }
 
-    public void openApplicationSettings(){
-        Intent appSettingsIntent =  new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getPackageName()));
+    public void openApplicationSettings() {
+        Intent appSettingsIntent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + getPackageName()));
         startActivityForResult(appSettingsIntent, ConstantManager.PERMISSION_REQUEST_SETTINGS_CODE);
     }
+
+
+    /**
+     * метод вызывает намерения звонка и предает ему интент
+     */
+    private void callPhone(){
+        if (mUserPhone.getText().toString().matches(REGEX_PHONE)) {
+            Intent openPhone = new Intent(Intent.ACTION_DIAL);
+            openPhone.setData(Uri.parse("tel:"+mUserPhone.getText().toString()));
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            startActivity(openPhone);
+        } else showSnackbar(getString(R.string.error_call_phone));
+    }
+
+    /**
+     * метод вызывает намериния почтовых клиентов и отправляет в него нашь интент.
+     */
+    private void sendEmail(){
+        if (mUserEmail.getText().toString().matches(REGEX_EMAIL)) {
+            Intent sendEmail = new Intent(Intent.ACTION_SEND);
+            sendEmail.setType("plain/text");
+            sendEmail.putExtra(Intent.EXTRA_EMAIL, new String[] {mUserEmail.getText().toString()});
+            startActivity(sendEmail);
+        } else {
+            showSnackbar(getString(R.string.error_send_email));
+        }
+    }
+
+    /**
+     * Метод ищет и запускает Намериния для просмотра ссылки в интернет
+     * @param url - Строковая ссылка (url страници)
+     */
+    private void lookAdressInternet(String url){
+        Intent webpage = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(webpage);
+    }
+
+
 }

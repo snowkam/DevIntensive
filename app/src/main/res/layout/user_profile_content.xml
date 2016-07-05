@@ -174,7 +174,8 @@
             </LinearLayout>
 
             <ImageView
-                android:id="@+id/call_btn"
+                android:id="@+id/call_img"
+                android:clickable="true"
                 style="@style/icon.right"
                 android:src="@drawable/ic_phone_in_talk_black_24dp"/>
         </LinearLayout>
@@ -225,6 +226,8 @@
             </LinearLayout>
 
             <ImageView
+                android:id="@+id/send_email_img"
+                android:clickable="true"
                 style="@style/icon.right"
                 android:src="@drawable/ic_send_black_24dp"/>
         </LinearLayout>
@@ -261,14 +264,13 @@
                     android:layout_height="wrap_content">
 
                     <EditText
-                        android:id="@+id/vk_et"
+                        android:id="@+id/vkcom_et"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:enabled="true"
                         android:focusable="false"
                         android:hint="@string/txt.hint.vk"
-                        android:inputType="textUri"
-                        android:text="vk.com/dima_dima"
+                        android:text=""
                         android:textColor="@color/black"
                         android:textColorHint="@color/grey"/>
                 </android.support.design.widget.TextInputLayout>
@@ -276,6 +278,8 @@
             </LinearLayout>
 
             <ImageView
+                android:id="@+id/vkcom_img"
+                android:clickable="true"
                 style="@style/icon.right"
                 android:src="@drawable/ic_visibility_black_24dp"/>
         </LinearLayout>
@@ -317,7 +321,7 @@
                         android:enabled="true"
                         android:focusable="false"
                         android:hint="@string/txt.hint.github"
-                        android:inputType="textUri"
+
                         android:text="https://github.com/snowkam/DevIntensive"
                         android:textColor="@color/black"
                         android:textColorHint="@color/grey"/>
@@ -326,6 +330,8 @@
             </LinearLayout>
 
             <ImageView
+                android:id="@+id/github_img"
+                android:clickable="true"
                 style="@style/icon.right"
                 android:src="@drawable/ic_visibility_black_24dp"/>
         </LinearLayout>
@@ -357,12 +363,12 @@
                 android:orientation="vertical">
 
                 <android.support.design.widget.TextInputLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <EditText
                         android:id="@+id/bio_et"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:enabled="true"
                         android:focusable="false"
