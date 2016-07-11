@@ -10,6 +10,18 @@
         в общем плане связная и полная последовательность символов. Текст (от лат. textus — «ткань; сплетение, связь, паутина, сочетание») —
         зафиксированная на каком-либо материальном носителе человеческая мысль;
         в общем плане связная и полная последовательность символов.</string>
+    <string name="user_profile_placeholder.image">Изменить фотографию профиля</string>
+    <string name="user.profile.dialog.gallery">Из галлереи</string>
+    <string name="user_profile.dialog.camera">Сделать снимок</string>
+    <string name="user_profile_dialog_cancel">Отмена</string>
+    <string name="user_profile_dialog_title">Изменить фотографию</string>
+    <string name="user_profile_chose_message">выберите фото</string>
+    <string name="error_call_phone">Не правильный формат телефона!!!</string>
+    <string name="error_send_email">Неверный формат почты.</string>
+    <string name="error_nourl_internet">Неверный формат ссылки!!!</string>
+    <string name="txt.hint_password">Password</string>
+    <string name="txt.login">Войти</string>
+    <string name="txt_forgot_password">Забыли пароль?</string>
 
 
 </resources>
