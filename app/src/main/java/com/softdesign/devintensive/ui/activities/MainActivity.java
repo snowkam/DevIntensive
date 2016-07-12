@@ -52,6 +52,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import butterknife.BindViews;
+import butterknife.ButterKnife;
+
 public class MainActivity extends BaseActivity implements View.OnClickListener {
     static final String TAG = ConstantManager.TAG_PREFIX + "MainActivity";
 
@@ -76,6 +79,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private List<EditText> mUserInfoViews;
     private TextView mUserMailText;
 
+    @BindViews({R.id.rating_txt, R.id.code_txt, R.id.project_txt}) List<TextView> mUserValueViews;
+
     private NavigationView mNavigationView;
 
     private RelativeLayout mProfilePlaceholder;
@@ -95,7 +100,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d(TAG, "onCreate");
+        ButterKnife.bind(this);
+        //Log.d(TAG, "onCreate");
 
         mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
         mHeader = mNavigationView.getHeaderView(0);
@@ -223,8 +229,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         setupToolbar();
         setupDrawer();
-        loadUserInfoValue();
+        initUserFields();
         setupAvatarNavigationDrawer();
+        initUserInfoValue();
+
+
         Picasso.with(this)
                 .load(mDataManager.getPreferancesManager().loadUserPhoto())
                 .placeholder(R.drawable.user_photo)
@@ -254,7 +263,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     protected void onPause() {
         super.onPause();
         Log.d(TAG, "onPause");
-        saveUserInfoValue();
+        saveUserFields();
     }
 
 
@@ -376,7 +385,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 userValue.setEnabled(false);
                 userValue.setFocusable(false);
                 userValue.setFocusableInTouchMode(false);
-                saveUserInfoValue();
+                saveUserFields();
             }
             hideProfilePlaceHolder();
             unlockToolbar();
@@ -389,7 +398,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
      * метод для загрузки данных о пользователя из Preferances
      */
 
-    private void loadUserInfoValue() {
+    private void initUserFields() {
         List<String> userData = mDataManager.getPreferancesManager().loadUserProfileData();
         for (int i = 0; i < userData.size(); i++) {
             mUserInfoViews.get(i).setText(userData.get(i));
@@ -399,7 +408,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     /**
      * метод для записи данных пользователя в Preferances
      */
-    private void saveUserInfoValue() {
+    private void saveUserFields() {
         List<String> userData = new ArrayList<>();
 
         for (EditText userFieldView : mUserInfoViews) {
@@ -463,6 +472,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
 
 
+    }
+
+    private void initUserInfoValue() {
+        List<String> userData = mDataManager.getPreferancesManager().loadUserProfileValue();
+        for (int i = 0; i < userData.size(); i++) {
+            mUserValueViews.get(i).setText(userData.get(i));
+
+        }
     }
 
 
