@@ -136,4 +136,9 @@ public class AuthActivity extends BaseActivity {
         mDataManager.getPreferancesManager().saveUserPhoto(Uri.parse(photo));
     }
 
+    private void saveUserAvatar(UserModelRes userModel){
+        String avatar =  userModel.getData().getUser().getPublicInfo().getAvatar();
+        mDataManager.getPreferancesManager().saveUserAvatar(Uri.parse(avatar));
+    }
+
 }

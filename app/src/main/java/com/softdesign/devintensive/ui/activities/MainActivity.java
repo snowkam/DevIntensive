@@ -45,8 +45,12 @@ import com.softdesign.devintensive.utils.RegexInputFilter;
 import com.softdesign.devintensive.utils.RoundedAvatarDrawable;
 import com.squareup.picasso.Picasso;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -238,6 +242,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 .load(mDataManager.getPreferancesManager().loadUserPhoto())
                 .placeholder(R.drawable.user_photo)
                 .into(mProfileImage);
+
+
 
 
         if (savedInstanceState == null) {
@@ -444,6 +450,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private void setupAvatarNavigationDrawer() {
         ImageView mUserAvatarImg = (ImageView) mHeader.findViewById(R.id.user_avatar_img);
         Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.user_avatar);
+
+        /*try {
+            bitmap =  Picasso.with(this)
+                    .load(mDataManager.getPreferancesManager().loadUserPhoto())
+                    .get();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+
 
         mUserAvatarImg.setImageDrawable(new RoundedAvatarDrawable(bitmap));
     }

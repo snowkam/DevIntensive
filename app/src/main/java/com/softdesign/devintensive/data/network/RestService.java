@@ -9,11 +9,8 @@ import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
-/**
- * Created by ant on 11.07.16.
- */
-public interface RestService {
 
+public interface RestService {
 
     @POST("login")
     Call<UserModelRes> loginUser (@Body UserLoginReq req);
