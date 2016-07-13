@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -44,6 +45,7 @@ import com.softdesign.devintensive.utils.ConstantManager;
 import com.softdesign.devintensive.utils.RegexInputFilter;
 import com.softdesign.devintensive.utils.RoundedAvatarDrawable;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -79,6 +81,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private EditText mUserPhone, mUserEmail, mUserVk, mUserGit, mUserBio;
 
     private ImageView mCallImg, mSendEmail, mLookVk, mLookGithub;
+    ImageView mUserAvatarImg;
 
     private List<EditText> mUserInfoViews;
     private TextView mUserMailText;
@@ -174,7 +177,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                Log.d(TAG, "editable.length() =======" + mUserVk.getText().toString());
+
                 if (mUserVk.getText().length() < 7) {
                     mUserVk.setText("vk.com/");
                     mUserVk.setSelection(7);
@@ -268,7 +271,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onPause() {
         super.onPause();
-        Log.d(TAG, "onPause");
+
         saveUserFields();
     }
 
@@ -447,20 +450,40 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     /**
      * вспомогательный метод для скругления изображения
      */
+
     private void setupAvatarNavigationDrawer() {
-        ImageView mUserAvatarImg = (ImageView) mHeader.findViewById(R.id.user_avatar_img);
-        Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.user_avatar);
+        mUserAvatarImg = (ImageView) mHeader.findViewById(R.id.user_avatar_img);
+        /*Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.user_avatar);
+        mUserAvatarImg.setImageDrawable(new RoundedAvatarDrawable(bitmap));*/
 
-        /*try {
-            bitmap =  Picasso.with(this)
-                    .load(mDataManager.getPreferancesManager().loadUserPhoto())
-                    .get();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
+        Log.d(TAG, "loadUserAvatar ============" + mDataManager.getPreferancesManager().loadUserAvatar());
+
+       /* Picasso.with(this)
+                .load(mDataManager.getPreferancesManager().loadUserAvatar())
+                .placeholder(R.drawable.user_photo)
+                .into(mUserAvatarImg);*/
+
+        Picasso.with(this)
+                .load(mDataManager.getPreferancesManager().loadUserAvatar())
+                .placeholder(R.drawable.user_avatar)
+                .into(new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        mUserAvatarImg.setImageDrawable(new RoundedAvatarDrawable(bitmap));
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Drawable errorDrawable) {
+                        Log.d(TAG, "Ошибка загрузки битмапа");
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                    }
+                });
 
 
-        mUserAvatarImg.setImageDrawable(new RoundedAvatarDrawable(bitmap));
     }
 
     /**
@@ -609,7 +632,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
      */
     private void insertProfileImage(Uri selectedImage) {
         Picasso.with(this).load(selectedImage).into(mProfileImage);
-        mDataManager.getPreferancesManager().saveUserPhoto(selectedImage);
+        mDataManager.getPreferancesManager().saveUserPhoto(selectedImage.toString());
 
     }
 

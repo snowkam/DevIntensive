@@ -57,17 +57,17 @@ public class PreferancesManager {
 
     /**
      * Сохъраняем фотографию пользователя в профит
-     * @param uri
+     * @param uriPhoto
      */
-    public void saveUserPhoto(Uri uri) {
+    public void saveUserPhoto(String uriPhoto) {
         SharedPreferences.Editor editor = mSharedPreferences.edit();
-        editor.putString(ConstantManager.USER_PHOTO_KEY, uri.toString());
+        editor.putString(ConstantManager.USER_PHOTO_KEY, uriPhoto);
         editor.apply();
     }
 
-    public void saveUserAvatar(Uri uri) {
+    public void saveUserAvatar(String uriAvatar) {
         SharedPreferences.Editor editor = mSharedPreferences.edit();
-        editor.putString(ConstantManager.USER_AVATAR_KEY, uri.toString());
+        editor.putString(ConstantManager.USER_AVATAR_KEY, uriAvatar);
         editor.apply();
     }
 

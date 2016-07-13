@@ -76,6 +76,7 @@ public class AuthActivity extends BaseActivity {
         saveUserValues(userModel);
         saveUserFields(userModel);
         saveUserPhoto(userModel);
+        saveUserAvatar(userModel);
 
         Intent loginIntent = new Intent(this, MainActivity.class);
         startActivity(loginIntent);
@@ -133,12 +134,12 @@ public class AuthActivity extends BaseActivity {
 
     private void saveUserPhoto(UserModelRes userModel){
         String photo =  userModel.getData().getUser().getPublicInfo().getPhoto();
-        mDataManager.getPreferancesManager().saveUserPhoto(Uri.parse(photo));
+        mDataManager.getPreferancesManager().saveUserPhoto(photo);
     }
 
     private void saveUserAvatar(UserModelRes userModel){
         String avatar =  userModel.getData().getUser().getPublicInfo().getAvatar();
-        mDataManager.getPreferancesManager().saveUserAvatar(Uri.parse(avatar));
+        mDataManager.getPreferancesManager().saveUserAvatar(avatar);
     }
 
 }
