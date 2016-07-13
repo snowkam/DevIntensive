@@ -39,7 +39,6 @@ public class PreferancesManager {
     public void saveUserProfileData(List<String> userFields){
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         for (int i = 0; i < USER_FIELDS.length; i++ ) {
-            Log.d("TAG", "++++++++++++++++++++++++ " + userFields.get(i));
             editor.putString(USER_FIELDS[i], userFields.get(i));
         }
         editor.apply();
@@ -56,11 +55,22 @@ public class PreferancesManager {
         return userFields;
     }
 
+    /**
+     * Сохъраняем фотографию пользователя в профит
+     * @param uri
+     */
     public void saveUserPhoto(Uri uri) {
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putString(ConstantManager.USER_PHOTO_KEY, uri.toString());
         editor.apply();
     }
+
+    public void saveUserAvatar(Uri uri) {
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString(ConstantManager.USER_AVATAR_KEY, uri.toString());
+        editor.apply();
+    }
+
 
     public List<String> loadUserProfileValue(){
         List<String> userValues = new ArrayList<>();
@@ -81,6 +91,11 @@ public class PreferancesManager {
     public Uri loadUserPhoto(){
         return Uri.parse(mSharedPreferences.getString(ConstantManager.USER_PHOTO_KEY, "android.resource://com.softdesign.devintensive/drawable/user_photo"));
     }
+
+    public Uri loadUserAvatar(){
+        return Uri.parse(mSharedPreferences.getString(ConstantManager.USER_AVATAR_KEY, "android.resource://com.softdesign.devintensive/drawable/user_avatar"));
+    }
+
 
     public void saveAuthToken(String authToken){
         SharedPreferences.Editor editor = mSharedPreferences.edit();
