@@ -21,4 +21,8 @@
     <dimen name="fab_right_space">8dp</dimen>
     <dimen name="spacing_medial_28">28dp</dimen>
     <dimen name="placeholder_photo_sizw_90">90dp</dimen>
+
+    <dimen name="font_medium_20">20sp</dimen>
+    <dimen name="font_medium_24">24sp</dimen>
+    <dimen name="font_medium_14">14sp</dimen>
 </resources>

@@ -40,4 +40,12 @@
         <item name="colorButtonNormal">@color/red_dirty</item>
         <item name="android:textColor">@color/white</item>
     </style>
+    
+    <!--ToolBar-->
+    <style name="ToolBarStyle" parent="Theme.AppCompat">
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
+        <item name="android:actionMenuTextColor">@color/white</item>
+    </style>
+
 </resources>
