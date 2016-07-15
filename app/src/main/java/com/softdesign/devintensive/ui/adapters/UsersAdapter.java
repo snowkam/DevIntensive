@@ -14,29 +14,29 @@ import com.softdesign.devintensive.data.network.res.UserListRes;
 import com.softdesign.devintensive.ui.views.AspectRatioImageView;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by ant on 14.07.16.
  */
 public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHolder> {
 
-    Context mContext;
-    List<UserListRes.UserData> mUser;
+   private Context mContext;
+   private List<UserListRes.UserData> mUser;
+   private UserViewHolder.CustomClickListener mCustomClickListener;
 
-    public UsersAdapter(List<UserListRes.UserData> user) {
+    public UsersAdapter(List<UserListRes.UserData> user, UserViewHolder.CustomClickListener customClickListener) {
         mUser = user;
-        Log.d("TAG", "UsersAdapter  ========++++++++++++++++++++++++++++++++ "  );
+        this.mCustomClickListener = customClickListener;
+
     }
 
     @Override
     public UserViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         mContext = parent.getContext();
         View convertView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user_list, parent, false);
-        Log.d("TAG", "UsersAdapter  ========onCreateViewHolder ++++++++++++++++++++++++++++++++ "  );
-        return new UserViewHolder(convertView);
+
+        return new UserViewHolder(convertView, mCustomClickListener);
 
     }
 
@@ -54,7 +54,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         holder.mCodeLine.setText(String.valueOf(user.getProfileValues().getLinesCode()));
         holder.mProjects.setText(String.valueOf(user.getProfileValues().getProjects()));
 
-        Log.d("TAG", "UsersAdapter onBindViewHolder ======== " + user.getFullName() );
+
 
         if (user.getPublicInfo().getBio()==null || user.getPublicInfo().getBio().isEmpty()){
             holder.mbio.setVisibility(View.GONE);
@@ -70,14 +70,18 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         return mUser.size();
     }
 
-    public static class UserViewHolder extends RecyclerView.ViewHolder{
+    public static class UserViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         protected AspectRatioImageView userPhoto;
         protected TextView mFullName, mRating, mCodeLine, mProjects, mbio;
-        protected Button mMoreInfo;
+        protected Button mShowMore;
 
-        public UserViewHolder(View itemView) {
+        private CustomClickListener mListener;
+
+
+        public UserViewHolder(View itemView, CustomClickListener  customClickListener) {
             super(itemView);
+            this.mListener = customClickListener;
 
             userPhoto = (AspectRatioImageView) itemView.findViewById(R.id.user_photo_item_iv);
             mFullName =(TextView) itemView.findViewById(R.id.user_full_name_txt);
@@ -85,8 +89,22 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
             mCodeLine =(TextView) itemView.findViewById(R.id.code_item_txt);
             mProjects =(TextView) itemView.findViewById(R.id.project_item_txt);
             mbio =(TextView) itemView.findViewById(R.id.bio_item_txt);
-           /* mMoreInfo = (Button) itemView.findViewById(R.id.more_info_item_btn);*/
+            mShowMore = (Button) itemView.findViewById(R.id.more_info_item_btn);
 
+            mShowMore.setOnClickListener(this);
+
+        }
+
+        @Override
+        public void onClick(View view) {
+            if(mListener != null) {
+                mListener.onUserClickListener(getAdapterPosition());
+            }
+
+        }
+
+        public interface  CustomClickListener{
+            void onUserClickListener(int position);
         }
     }
 }

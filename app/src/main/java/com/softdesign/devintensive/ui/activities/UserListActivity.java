@@ -1,6 +1,6 @@
 package com.softdesign.devintensive.ui.activities;
 
-import android.support.design.widget.AppBarLayout;
+import android.content.Intent;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
@@ -8,7 +8,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -18,10 +17,10 @@ import android.view.MenuItem;
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.data.managers.DataManager;
 import com.softdesign.devintensive.data.network.res.UserListRes;
+import com.softdesign.devintensive.data.storage.models.UserDTO;
 import com.softdesign.devintensive.ui.adapters.UsersAdapter;
 import com.softdesign.devintensive.utils.ConstantManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -84,7 +83,16 @@ public class UserListActivity extends AppCompatActivity {
                 //// TODO: 14.07.16  обработка кодов возвращения 200 300 400 .....
                 try {
                     mUsers = response.body().getData();
-                    mUsersAdapter = new UsersAdapter(mUsers);
+                    mUsersAdapter = new UsersAdapter(mUsers, new UsersAdapter.UserViewHolder.CustomClickListener() {
+                        @Override
+                        public void onUserClickListener(int position) {
+
+                            UserDTO userDTO = new UserDTO(mUsers.get(position));
+                            Intent profileIntent = new Intent(UserListActivity.this, ProfileUserActivity.class);
+                            profileIntent.putExtra(ConstantManager.PARCELABLE_KEY, userDTO);
+                            startActivity(profileIntent);
+                        }
+                    });
                     mRecyclerView.setAdapter(mUsersAdapter);
 
                     Log.d(TAG, "loadUsers() onResponse ");
