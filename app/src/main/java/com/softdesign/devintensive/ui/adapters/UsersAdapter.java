@@ -46,7 +46,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
 
         Picasso.with(mContext)
                 .load(user.getPublicInfo().getPhoto())
-                .placeholder(mContext.getResources().getDrawable(R.drawable.user_photo))
+                .placeholder(mContext.getResources().getDrawable(R.drawable.user_bg))
                 .into(holder.userPhoto);
 
         holder.mFullName.setText(user.getFullName());
