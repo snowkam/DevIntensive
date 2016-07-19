@@ -12,13 +12,13 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.SearchView;
-
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.data.managers.DataManager;
@@ -49,6 +49,8 @@ public class UserListActivity extends AppCompatActivity {
     private MenuItem mSearchItem;
     private String mQuery;
     private Handler mHandler;
+    private boolean isCloseSearhBtn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +66,6 @@ public class UserListActivity extends AppCompatActivity {
         LinearLayoutManager gridLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(gridLayoutManager);
         mHandler = new Handler();
-
 
 
         setupToolbar();
@@ -115,7 +116,7 @@ public class UserListActivity extends AppCompatActivity {
     private void loadUsersFromDb() {
         //mUsers = mDataManager.getUserListFromDb();
 
-        if (mDataManager.getUserListFromDb().size()==0) {
+        if (mDataManager.getUserListFromDb().size() == 0) {
             showSnackbar("список пользователей не может быть загружен");
         } else {
 
@@ -144,7 +145,7 @@ public class UserListActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.search_menu, menu);
 
         mSearchItem = menu.findItem(R.id.search_action);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(mSearchItem);
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(mSearchItem);
         searchView.setQueryHint("Введите имя пользователя");
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -155,11 +156,24 @@ public class UserListActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-
+                isCloseSearhBtn = false;
                 showUserByQuery(newText);
                 return false;
             }
+
         });
+
+        /* недоделанное дело не смог вызвать onClick супер класса
+        int searchCloseButton = searchView.getContext().getResources()
+                .getIdentifier("android:id/search_close_btn", null, null);
+        ImageView closeButton = (ImageView) searchView.findViewById(searchCloseButton);
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               //isCloseSearhBtn = true;
+
+            }
+        });*/
 
         return super.onPrepareOptionsMenu(menu);
     }
@@ -179,9 +193,8 @@ public class UserListActivity extends AppCompatActivity {
         mRecyclerView.swapAdapter(mUsersAdapter, false);
     }
 
-    private void showUserByQuery(String query){
+    private void showUserByQuery(String query) {
         mQuery = query;
-
         Runnable searchUsers = new Runnable() {
             @Override
             public void run() {
@@ -189,8 +202,12 @@ public class UserListActivity extends AppCompatActivity {
             }
         };
         mHandler.removeCallbacks(searchUsers);
-        mHandler.postDelayed(searchUsers, ConstantManager.SEARCH_DELAY);
-
-
+        //если равен пустому значению значит выполнить без задержки
+        if (!query.equals("")){
+            mHandler.postDelayed(searchUsers, ConstantManager.SEARCH_DELAY);
+        } else {
+            mHandler.post(searchUsers);
+        }
     }
+
 }
