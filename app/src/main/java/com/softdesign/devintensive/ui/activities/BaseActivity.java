@@ -7,13 +7,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.redmadrobot.chronos.gui.activity.ChronosActivity;
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.utils.ConstantManager;
 
 /**
  * Created by ant on 26.06.2016.
  */
-public class BaseActivity extends AppCompatActivity {
+public class BaseActivity extends ChronosAppCompatActivity {
     static final String TAG = ConstantManager.TAG_PREFIX + "MainActivity";
     protected ProgressDialog mProgressDialog;
 

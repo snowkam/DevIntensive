@@ -71,35 +71,11 @@ public class UserListActivity extends AppCompatActivity {
         setupToolbar();
         setupDrawer();
         loadUsersFromDb();
-        /* mUsers = new ArrayList<>();
-        if (savedInstanceState !=null) {
-            mUsersArray = (ArrayList<UserListRes.UserData>) savedInstanceState.getSerializable(SAVEINSTATE_KEY);
-             for (int i = 0 ; i< mUsersArray.size(); i++){
-                mUsers.add(mUsersArray.get(i));
-             }
-        }
-
-        if (mUsers.isEmpty()){
-        loadUsers();
-        } else {
-            creatAdapter();
-         }*/
 
 
     }
 
-    /*@Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        mUsersArray = new ArrayList();
-        for (int i = 0; i < mUsers.size(); i++){
-            mUsersArray.add(mUsers.get(i));
-        }
 
-        Log.d("TAG","onSaveInstanceState ========= do"  );
-        outState.putSerializable(SAVEINSTATE_KEY, mUsersArray);
-        Log.d("TAG","onSaveInstanceState ========= posle"  );
-    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -114,7 +90,6 @@ public class UserListActivity extends AppCompatActivity {
     }
 
     private void loadUsersFromDb() {
-        //mUsers = mDataManager.getUserListFromDb();
 
         if (mDataManager.getUserListFromDb().size() == 0) {
             showSnackbar("список пользователей не может быть загружен");

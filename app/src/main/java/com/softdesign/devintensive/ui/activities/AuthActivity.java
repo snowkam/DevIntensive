@@ -40,7 +40,7 @@ public class AuthActivity extends BaseActivity {
     private DataManager mDataManager;
     private RepositoryDao mRepositoryDao;
     private UserDao mUserDao;
-
+    private boolean mFlagToken = false;
 
 
     @BindView(R.id.login_password_et)
@@ -58,8 +58,19 @@ public class AuthActivity extends BaseActivity {
         mUserDao = mDataManager.getDaoSession().getUserDao();
         mRepositoryDao = mDataManager.getDaoSession().getRepositoryDao();
 
-
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinator_container_auth);
+
+
+
+
+        if (!mDataManager.getPreferancesManager().getAuthToken().equals("null")) {
+            showProgress();
+
+            saveUserInDb();
+            showMainActivity();
+        }
+
+
         ButterKnife.bind(this);
     }
 
@@ -85,7 +96,7 @@ public class AuthActivity extends BaseActivity {
     }
 
     private void loginSuccess(UserModelRes userModel) {
-        showSnackbar(userModel.getData().getToken());
+        //showSnackbar(userModel.getData().getToken());
         mDataManager.getPreferancesManager().saveAuthToken(userModel.getData().getToken());
         mDataManager.getPreferancesManager().saveUserId(userModel.getData().getUser().getId());
         saveUserValues(userModel);
@@ -95,20 +106,25 @@ public class AuthActivity extends BaseActivity {
         saveUserPhoto(userModel);
         saveUserAvatar(userModel);
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //Intent loginIntent = new Intent(AuthActivity.class, MainActivity.class);
-                Intent loginIntent = new Intent(AuthActivity.this, UserListActivity.class);
-                startActivity(loginIntent);
-            }
-        }, AppConfig.START_DELAY);
+        showMainActivity();
 
 
     }
 
+    private void showMainActivity() {
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent loginIntent = new Intent(AuthActivity.this, MainActivity.class);
+                //Intent loginIntent = new Intent(AuthActivity.this, UserListActivity.class);
+                startActivity(loginIntent);
+            }
+        }, AppConfig.START_DELAY);
+    }
+
     private void signIn() {
+        showProgress();
         if (NtworksStatusChecker.isNetworkAvailable(this)) {
 
             Call<UserModelRes> call = mDataManager.loginUser(new UserLoginReq(mLogin.getText().toString(), mPassword.getText().toString()));
@@ -134,6 +150,7 @@ public class AuthActivity extends BaseActivity {
         } else {
             showSnackbar("Сеть отсутствует");
         }
+        hideProgress();
 
     }
 
@@ -158,31 +175,28 @@ public class AuthActivity extends BaseActivity {
         mDataManager.getPreferancesManager().saveUserProfileData(userFields);
     }
 
-    private void saveUserPhoto(UserModelRes userModel){
-        String photo =  userModel.getData().getUser().getPublicInfo().getPhoto();
+    private void saveUserPhoto(UserModelRes userModel) {
+        String photo = userModel.getData().getUser().getPublicInfo().getPhoto();
         mDataManager.getPreferancesManager().saveUserPhoto(photo);
     }
 
-    private void saveUserAvatar(UserModelRes userModel){
-        String avatar =  userModel.getData().getUser().getPublicInfo().getAvatar();
+    private void saveUserAvatar(UserModelRes userModel) {
+        String avatar = userModel.getData().getUser().getPublicInfo().getAvatar();
         mDataManager.getPreferancesManager().saveUserAvatar(avatar);
     }
 
-    private void saveUserInDb(){
-        Call<UserListRes> call =mDataManager.getUserListFromNetwork();
+    private void saveUserInDb() {
+        Call<UserListRes> call = mDataManager.getUserListFromNetwork();
 
         call.enqueue(new Callback<UserListRes>() {
             @Override
             public void onResponse(Call<UserListRes> call, Response<UserListRes> response) {
-
-
                 try {
-                    if(response.code()== 200){
-
-                        List<Repository> allRepositories = new ArrayList<Repository>();
+                    if (response.code() == 200) {
+                       List<Repository> allRepositories = new ArrayList<Repository>();
                         List<User> allUsers = new ArrayList<User>();
 
-                        for (UserListRes.UserData userRes: response.body().getData()) {
+                        for (UserListRes.UserData userRes : response.body().getData()) {
 
                             allRepositories.addAll(getRepoListfromUserRes(userRes));
                             allUsers.add(new User(userRes));
@@ -193,14 +207,14 @@ public class AuthActivity extends BaseActivity {
                         mUserDao.insertOrReplaceInTx(allUsers);
 
 
-                    }else {
+                    } else {
                         showSnackbar("Список пользователей не может быть получен");
                         Log.e(TAG, "onResponse: " + String.valueOf(response.errorBody().source()));
                     }
 
 
-                } catch (NullPointerException e){
-                    Log.d(TAG, e.toString() );
+                } catch (NullPointerException e) {
+                    Log.d(TAG, e.toString());
                 }
             }
 
@@ -210,8 +224,9 @@ public class AuthActivity extends BaseActivity {
 
             }
         });
-
+        hideProgress();
     }
+
 
     private List<Repository> getRepoListfromUserRes(UserListRes.UserData userData) {
         final String userId = userData.getId();
@@ -221,7 +236,12 @@ public class AuthActivity extends BaseActivity {
             repositories.add(new Repository(repositoryRes, userId));
         }
         return repositories;
-
     }
+
+
+
+
+
+
 
 }

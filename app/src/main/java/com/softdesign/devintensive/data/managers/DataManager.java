@@ -72,6 +72,10 @@ public class DataManager {
         return mRestService.getUserList();
     }
 
+    public Call<UserModelRes> loginToken() {
+        return mRestService.loginToken();
+    }
+
 
     public List<User> getUserListFromDb(){
         List<User> userList = new ArrayList<>();

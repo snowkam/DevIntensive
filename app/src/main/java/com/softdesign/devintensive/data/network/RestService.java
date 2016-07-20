@@ -20,4 +20,7 @@ public interface RestService {
     @GET("user/list?orderBy=rating")
     Call<UserListRes> getUserList();
 
+     @GET("login")
+     Call<UserModelRes> loginToken();
+
 }
