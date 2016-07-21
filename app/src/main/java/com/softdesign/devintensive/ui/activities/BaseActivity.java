@@ -14,7 +14,7 @@ import com.softdesign.devintensive.utils.ConstantManager;
 /**
  * Created by ant on 26.06.2016.
  */
-public class BaseActivity extends ChronosAppCompatActivity {
+public class BaseActivity extends AppCompatActivity {
     static final String TAG = ConstantManager.TAG_PREFIX + "MainActivity";
     protected ProgressDialog mProgressDialog;
 

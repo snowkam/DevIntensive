@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.widget.EditText;
 
+import com.redmadrobot.chronos.ChronosConnector;
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.data.managers.DataManager;
 import com.softdesign.devintensive.data.network.req.UserLoginReq;
@@ -37,6 +38,7 @@ import retrofit2.Response;
 public class AuthActivity extends BaseActivity {
     private CoordinatorLayout mCoordinatorLayout;
 
+    private ChronosConnector mConnector;
     private DataManager mDataManager;
     private RepositoryDao mRepositoryDao;
     private UserDao mUserDao;
@@ -52,7 +54,8 @@ public class AuthActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
-
+        mConnector = new ChronosConnector();
+        mConnector.onCreate(this, savedInstanceState);
         mDataManager = DataManager.getInstance();
 
         mUserDao = mDataManager.getDaoSession().getUserDao();
@@ -61,14 +64,12 @@ public class AuthActivity extends BaseActivity {
         mCoordinatorLayout = (CoordinatorLayout) findViewById(R.id.main_coordinator_container_auth);
 
 
-
-
-        if (!mDataManager.getPreferancesManager().getAuthToken().equals("null")) {
+        /*if (!mDataManager.getPreferancesManager().getAuthToken().equals("null")) {
             showProgress();
 
             saveUserInDb();
             showMainActivity();
-        }
+        }*/
 
 
         ButterKnife.bind(this);
@@ -186,6 +187,7 @@ public class AuthActivity extends BaseActivity {
     }
 
     private void saveUserInDb() {
+        showProgress();
         Call<UserListRes> call = mDataManager.getUserListFromNetwork();
 
         call.enqueue(new Callback<UserListRes>() {
@@ -193,7 +195,8 @@ public class AuthActivity extends BaseActivity {
             public void onResponse(Call<UserListRes> call, Response<UserListRes> response) {
                 try {
                     if (response.code() == 200) {
-                       List<Repository> allRepositories = new ArrayList<Repository>();
+                        mConnector.runOperation(new OperationChrones(response), true);
+                      /*  List<Repository> allRepositories = new ArrayList<Repository>();
                         List<User> allUsers = new ArrayList<User>();
 
                         for (UserListRes.UserData userRes : response.body().getData()) {
@@ -204,7 +207,7 @@ public class AuthActivity extends BaseActivity {
                         }
 
                         mRepositoryDao.insertOrReplaceInTx(allRepositories);
-                        mUserDao.insertOrReplaceInTx(allUsers);
+                        mUserDao.insertOrReplaceInTx(allUsers);*/
 
 
                     } else {
@@ -224,7 +227,7 @@ public class AuthActivity extends BaseActivity {
 
             }
         });
-        hideProgress();
+
     }
 
 
@@ -238,8 +241,37 @@ public class AuthActivity extends BaseActivity {
         return repositories;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mConnector.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mConnector.onPause();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mConnector.onSaveInstanceState(outState);
+    }
 
 
+    public void onOperationFinished(final OperationChrones.Result result) {
+
+        if (result.isSuccessful()) {
+            //// TODO: 20.07.16  обрабатываем то что получено от хронеса
+
+            mRepositoryDao.insertOrReplaceInTx(result.getOutput().getAllRepositories());
+            mUserDao.insertOrReplaceInTx(result.getOutput().getAllUsers());
+        }
+        hideProgress();
+        Intent loginIntent = new Intent(AuthActivity.this, MainActivity.class);
+        startActivity(loginIntent);
+    }
 
 
 
