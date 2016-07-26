@@ -1,6 +1,5 @@
-package com.softdesign.devintensive.ui.activities;
+package com.softdesign.devintensive.data.storage.chrones;
 
-import com.redmadrobot.chronos.ChronosOperation;
 import com.softdesign.devintensive.data.network.res.UserListRes;
 import com.softdesign.devintensive.data.network.res.UserModelRes;
 import com.softdesign.devintensive.data.storage.models.Repository;
