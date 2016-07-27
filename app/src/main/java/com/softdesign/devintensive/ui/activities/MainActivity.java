@@ -251,7 +251,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         if (savedInstanceState == null) {
             // первый запуск активити
-            showSnackbar("активити запустилась впервые");
+            //showSnackbar("активити запустилась впервые");
         } else {
             mCurrentEditMode = savedInstanceState.getInt(ConstantManager.EDIT_MODE_KEY, 0);
             changeEditMode(mCurrentEditMode);
@@ -362,6 +362,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
                 showSnackbar(item.getTitle().toString());
+
+                switch (item.getItemId()){
+                    case R.id.tea_menu:
+                        Intent intent = new Intent(MainActivity.this, UserListActivity.class);
+                        startActivity(intent);
+                    break;
+                }
+
                 item.setChecked(true);
                 mNavigationDrawer.closeDrawer(GravityCompat.START);
                 return false;

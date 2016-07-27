@@ -7,6 +7,7 @@
     android:background="@drawable/login_bg">
 
     <LinearLayout
+        android:id="@+id/ll_main_activity_auth"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/spacing_larger_72"
