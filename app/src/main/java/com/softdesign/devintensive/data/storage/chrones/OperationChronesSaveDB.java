@@ -12,17 +12,17 @@ import retrofit2.Response;
 /**
  * Created by ant on 20.07.16.
  */
-public final class OperationChrones extends ChronosOperation<SaveDB> {
+public final class OperationChronesSaveDB extends ChronosOperation<SaveDB> {
     Response<UserListRes> response;
 
-    public OperationChrones(Response<UserListRes> response) {
+    /*public OperationChronesSaveDB(Response<UserListRes> response) {
         this.response = response;
-    }
+    }*/
 
     @Nullable
     @Override
     public SaveDB run() {
-        SaveDB result = new SaveDB(response);
+        SaveDB result = new SaveDB();
         return result;
     }
 
